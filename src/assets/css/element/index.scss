@@ -1,0 +1,14 @@
+$--colors: (
+  'primary': (
+    'base': #18a058
+  )
+);
+
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+  $colors: $--colors
+);
+
+// 自定义暗黑模式变量
+@use './dark.scss';
+// 引入暗黑模式
+@use 'element-plus/theme-chalk/src/dark/css-vars.scss' as *
