@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Explore from '@/view/Explore.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -8,7 +7,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/explore',
-    component: () => Explore
+    component: () => import('@/view/Explore.vue')
   },
   // 没有匹配上的路由一律重定向到404路径
   {
