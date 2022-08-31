@@ -12,10 +12,6 @@ dist
 dist-ssr
 *.local
 
-# config
-src/config/*
-!src/config/example.index.ts
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
