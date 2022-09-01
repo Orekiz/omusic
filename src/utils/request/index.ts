@@ -13,7 +13,7 @@ class Request {
     this.baseUrl = baseUrl
   }
 
-  get ({ url, data }: AxiosRequest) {
+  get ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
       instance.get(url, { baseURL: this.baseUrl, params: data })
       .then(res => {
