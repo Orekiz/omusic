@@ -16,10 +16,12 @@ import { loginHooks, musicListHooks } from './api'
 const _isLogined = isLogined()
 // 未登录自动进行游客登录
 const _loginHooks = loginHooks()
-_loginHooks.guestLogin()
-.then(res => {
-  console.log(res)
-})
+if (!_isLogined) {
+  _loginHooks.guestLogin()
+  .then(res => {
+    console.log(res)
+  })
+}
 
 // 测试登录
 const _musicListHoos = musicListHooks()

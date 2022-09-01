@@ -33,5 +33,17 @@ export default defineConfig({
         importStyle: 'sass',
       })],
     })
-  ]
+  ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://neteasecloudmusic-api.oreki.love',
+        changeOrigin: true,
+        secure: false,
+        rewrite: path => {
+          return path.replace(/^\/api/, '')
+        }
+      }
+    }
+  }
 })

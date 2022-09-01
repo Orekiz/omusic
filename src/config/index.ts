@@ -1,1 +1,1 @@
-export const baseUrl = 'https://neteasecloudmusic-api.oreki.love'
+export const baseUrl = '/api'
