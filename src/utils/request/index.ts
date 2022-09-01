@@ -6,7 +6,6 @@
 import instance from "./axios"
 import { baseUrl } from "@/config"
 import { AxiosRequest } from "./typings"
-import { reject } from "lodash"
 
 class Request {
   protected baseUrl: string
@@ -35,7 +34,7 @@ class Request {
 
   post ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      instance.post(url, { baseUrl: this.baseUrl, data })
+      instance.post(`${this.baseUrl}${url}`, { data })
       .then(res => {
         // 200: 请求成功
         if (res.status === 200) {

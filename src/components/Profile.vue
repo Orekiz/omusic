@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
+import { useUserStore } from '@/store'
+const userStore = useUserStore()
+const isLogined = userStore.isLogined
+const nickname = userStore.nickname
 </script>
 
 <template>
@@ -16,8 +20,14 @@ import { UserFilled } from '@element-plus/icons-vue'
           <el-avatar class="avatar" size="large" :icon="UserFilled" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
         </div>
         <div class="profile-main">
-          <p class="name">nickname</p>
-          <p class="signature">signature</p>
+          <p class="name">{{ nickname }}</p>
+          <p v-if="isLogined" class="signature">signature</p>
+          <section v-if="isLogined" class="button-group-logined">
+            <button>退出登录</button>
+          </section>
+          <section v-else class="button-group-unlogin">
+            <button>登录</button>
+          </section>
         </div>
       </div>
     </template>
