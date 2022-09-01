@@ -10,7 +10,6 @@ declare module '@vue/runtime-core' {
     AudioControl: typeof import('./src/components/AudioControl.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElMessage: typeof import('element-plus/es')['ElMessage']
     ElPopover: typeof import('element-plus/es')['ElPopover']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     HeaderRouter: typeof import('./src/components/HeaderRouter.vue')['default']
