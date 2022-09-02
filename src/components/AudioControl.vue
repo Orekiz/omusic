@@ -4,7 +4,7 @@
   <audio src=""></audio>
   <div class="audio-control">
     <div class="wrapper">
-      <p>这是贯穿整个WEB的AudioControl组件</p>
+      <p>AudioControl</p>
     </div>
   </div>
 </template>

@@ -3,11 +3,11 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    component: () => import('@/view/HomeView.vue')
+    component: () => import('@/view/Home-View/Index.vue')
   },
   {
     path: '/explore',
-    component: () => import('@/view/Explore.vue')
+    component: () => import('@/view/Explore/Index.vue')
   },
   // 没有匹配上的路由一律重定向到404路径
   {
@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/404',
-    component: () => import('@/view/404.vue')
+    component: () => import('@/view/404/Index.vue')
   }
 ];
 
