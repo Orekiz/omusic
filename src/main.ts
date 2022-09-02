@@ -3,7 +3,7 @@ import './assets/css/index.scss'
 import App from './App.vue'
 import router from './router'
 
-import "element-plus/theme-chalk/el-message.css";
+import "element-plus/theme-chalk/el-message.css"
 
 // pinia
 import { createPinia } from 'pinia'
@@ -20,14 +20,14 @@ if (!_isLogined) {
   _loginHooks.guestLogin()
   .then(res => {
     console.log(res)
+    // 测试登录
+    const _musicListHoos = musicListHooks()
+    _musicListHoos.dailyRec()
+    .then(res => {
+      console.log(res)
+    })
+    .catch(err => {
+      console.log(err)
+    })
   })
 }
-
-// 测试登录
-const _musicListHoos = musicListHooks()
-_musicListHoos.dailyRec()
-.then(res => {
-  console.log(res)
-}) .catch (err => {
-  console.log(err)
-})
