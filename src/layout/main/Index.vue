@@ -4,7 +4,8 @@
 <template>
 <main>
   <router-view v-slot="{ Component }">
-    <keep-alive>
+    <!-- 只缓存HomeView -->
+    <keep-alive :include="['HomeView', 'Explore']">
       <component :is="Component" />
     </keep-alive>
   </router-view>
