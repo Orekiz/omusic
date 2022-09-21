@@ -8,5 +8,5 @@ export enum LoginDic {
 }
 
 export enum MusicListDic {
-  dailyRec = '/recommend/resource'
+  dailyRecRes = '/recommend/resource'
 }
