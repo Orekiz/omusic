@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
     ElAvatar: typeof import('element-plus/es')['ElAvatar']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElPopover: typeof import('element-plus/es')['ElPopover']
+    ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     HeaderRouter: typeof import('./src/components/HeaderRouter.vue')['default']
     MobileNav: typeof import('./src/components/MobileNav.vue')['default']

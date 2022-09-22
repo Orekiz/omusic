@@ -5,12 +5,11 @@
   }
 </script>
 <script setup lang="ts">
-import { onMounted, Ref, ref } from 'vue'
-import request from '@/utils/request'
+  import DailyRecRes from './DailyRecRes.vue'
 </script>
 
 <template>
-  home
+  <daily-rec-res />
 </template>
 
 <style lang="scss" scoped></style>
