@@ -15,7 +15,7 @@ import { loginHooks } from './api'
 // 验证是否登录
 const _isLogined = isLogined()
 // 未登录自动进行游客登录
-const _loginHooks = loginHooks()
+const { guestLogin } = loginHooks()
 if (!_isLogined) {
-  _loginHooks.guestLogin()
+  guestLogin()
 }

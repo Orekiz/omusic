@@ -1,9 +1,9 @@
-type DailyRecommendRescource = {
+type DailyRecommendResource = {
   id: number
   name: string
   picUrl: string
 }
 
 export type State = {
-  dailyRecommendRescourse: DailyRecommendRescource[]
+  dailyRecommendResource: DailyRecommendResource[]
 }

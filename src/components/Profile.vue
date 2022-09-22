@@ -1,9 +1,20 @@
 <script setup lang="ts">
 import { UserFilled } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
+import { computed } from 'vue';
+import { useRouter } from 'vue-router'
 const userStore = useUserStore()
 const isLogined = userStore.isLogined
 const nickname = userStore.nickname
+
+const signature = computed(() => {
+  return isLogined ? 'signature' : '当前是游客登陆'
+})
+
+const router = useRouter()
+const goLogin = () => {
+  router.push('/login')
+}
 </script>
 
 <template>
@@ -21,12 +32,12 @@ const nickname = userStore.nickname
         </div>
         <div class="profile-main">
           <p class="name">{{ nickname }}</p>
-          <p v-if="isLogined" class="signature">signature</p>
+          <p class="signature">{{ signature }}</p>
           <section v-if="isLogined" class="button-group-logined">
-            <button>退出登录</button>
+            <el-button type="primary">退出登录</el-button>
           </section>
           <section v-else class="button-group-unlogin">
-            <button>登录</button>
+            <el-button type="primary" @click="goLogin">登录</el-button>
           </section>
         </div>
       </div>
@@ -45,6 +56,14 @@ const nickname = userStore.nickname
     .name {
       font-weight: bold;
       font-size: 18px;
+    }
+
+    .signature {
+      margin-top: 5px;
+    }
+
+    .button-group-logined,.button-group-unlogin {
+      margin-top: 10px;
     }
   }
 }

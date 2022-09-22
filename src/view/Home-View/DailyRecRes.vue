@@ -1,17 +1,16 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, toRef } from 'vue'
 import { musicListHooks } from '@/api'
 import { State } from './typings'
 const loading = ref(true)
-const _musicListHooks = musicListHooks()
+const { dailyRec } = musicListHooks()
 const state: State = reactive({
-  dailyRecommendRescourse: []
+  dailyRecommendResource: []
 })
+const dailyRecommendResource = toRef(state, 'dailyRecommendResource')
 onMounted(() => {
-  _musicListHooks.dailyRec()
-  .then(res => {
-    state.dailyRecommendRescourse = res.recommend
-    console.log(res.recommend)
+  dailyRec().then(res => {
+    state.dailyRecommendResource = res.recommend
     loading.value = false
   })
 })
@@ -25,8 +24,8 @@ onMounted(() => {
     </section>
     <el-skeleton :loading="loading" animated>
       <template #default>
-        <section>
-          <p v-for="(item, index) of state.dailyRecommendRescourse" :key="index">
+        <section class="content">
+          <p v-for="(item, index) of dailyRecommendResource" :key="index">
             {{ item.name }}
           </p>
         </section>
@@ -38,12 +37,17 @@ onMounted(() => {
 <style lang="scss" scoped>
   .daily-rec {
     .title {
+      margin-bottom: 20px;
       h2 {
         font-size: 26px;
       }
       span {
         font-size: 12px;
       }
+    }
+
+    .content {
+      width: 100%;
     }
   }
 </style>

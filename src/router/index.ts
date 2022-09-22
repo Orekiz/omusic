@@ -9,6 +9,10 @@ const routes: RouteRecordRaw[] = [
     path: '/explore',
     component: () => import('@/view/Explore/Index.vue')
   },
+  {
+    path: '/login',
+    component: () => import('@/view/Login/Index.vue')
+  },
   // 没有匹配上的路由一律重定向到404路径
   {
     path: '/:pathMatch(.*)*',
