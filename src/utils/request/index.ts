@@ -6,6 +6,7 @@
 import instance from "./axios"
 import { baseUrl } from "@/config"
 import { AxiosRequest } from "./typings"
+import { getTimestamp } from '@/utils'
 
 class Request {
   protected baseUrl: string
@@ -16,7 +17,7 @@ class Request {
 
   get ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      instance.get(url, { baseURL: this.baseUrl, data })
+      instance.get(url, { baseURL: this.baseUrl, params: { ...data, realIP: '139.196.215.163', timestamp: getTimestamp() } })
       .then(res => {
         // 200: 请求成功
         if (res.status === 200) {
@@ -34,7 +35,7 @@ class Request {
 
   post ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      instance.post(`${this.baseUrl}${url}`, { ...data, realIP: '139.196.215.163' })
+      instance.post(`${this.baseUrl}${url}`, { ...data, realIP: '139.196.215.163', timestamp: getTimestamp() })
       .then(res => {
         // 200: 请求成功
         if (res.status === 200) {

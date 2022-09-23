@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { loginHooks } from '@/api'
+import { clearMusicA } from '@/utils'
 const loginMethod = ref('phone')
 const phone = ref('')
 const phonePassword = ref('')
@@ -27,6 +28,7 @@ const loginPhoneHandler = () => {
     let data = { phone: phone.value, password: phonePassword.value }
     loginPhone(data).then(res => {
         console.log(res)
+        clearMusicA()
     })
 }
 </script>
