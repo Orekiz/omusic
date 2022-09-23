@@ -1,17 +1,33 @@
 <script lang="ts" setup>
-import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { ref } from 'vue'
+import { Lock, Phone, Message } from '@element-plus/icons-vue'
+import { loginHooks } from '@/api'
 const loginMethod = ref('phone')
 const phone = ref('')
-const password = ref('')
-const goLoginEmail = () => {
+const phonePassword = ref('')
+const phoneCaptcha = ref('')
+const email = ref('')
+const emailPassword = ref('')
+const isCaptcha = ref(false)
+const toggleIsCaptcha = () => {
+    isCaptcha.value = !isCaptcha.value
+}
+const useLoginEmail = () => {
     loginMethod.value = 'email'
 }
-const goLoginPhone = () => {
+const useLoginPhone = () => {
     loginMethod.value = 'phone'
 }
-const goLoginQrcode = () => {
+const useLoginQrcode = () => {
     loginMethod.value = 'qrcode'
+}
+// login
+const { loginPhone } = loginHooks()
+const loginPhoneHandler = () => {
+    let data = { phone: phone.value, password: phonePassword.value }
+    loginPhone(data).then(res => {
+        console.log(res)
+    })
 }
 </script>
 
@@ -26,43 +42,55 @@ const goLoginQrcode = () => {
                     size="large"
                     placeholder="手机号"
                     :prefix-icon="Phone">    
-                        <template #prepend>+86</template>
+                            <template #prepend>+86</template>
                     </el-input>
                 </div>
-                <div class="input-field">
+                <div v-if="!isCaptcha" class="input-field">
                     <el-input
-                    v-model="password"
+                    v-model="phonePassword"
                     type="password"
                     size="large"
                     placeholder="密码"
                     :prefix-icon="Lock" />
                 </div>
-                <section class="input-field use-code">
-                    <el-button>
-                        发送验证码登录
+                <div v-else class="input-field captcha">
+                    <el-input
+                    v-model="phoneCaptcha"
+                    type="password"
+                    size="large"
+                    placeholder="验证码"
+                    :prefix-icon="Lock" />
+                    <el-button size="large">发送验证码</el-button>
+                </div>
+                <section class="input-field">
+                    <el-button v-if="!isCaptcha" @click="toggleIsCaptcha">
+                        使用验证码登录
+                    </el-button>
+                    <el-button v-else @click="toggleIsCaptcha">
+                        使用密码登录
                     </el-button>
                 </section>
                 <div class="input-field">
-                    <el-button type="primary" size="large">登录</el-button>
+                    <el-button type="primary" size="large" @click="loginPhoneHandler">登录</el-button>
                 </div>
                 <section class="other-login">
-                    <el-button type="primary" text @click="goLoginQrcode">二维码登录</el-button>
+                    <el-button type="primary" text @click="useLoginQrcode">二维码登录</el-button>
                     |
                     <i> </i>
-                    <el-button type="primary" text @click="goLoginEmail">&nbsp; 邮箱登录 &nbsp;</el-button>
+                    <el-button type="primary" text @click="useLoginEmail">&nbsp; 邮箱登录 &nbsp;</el-button>
                 </section>
             </section>
             <section v-show="loginMethod === 'email'">
                 <div class="input-field">
                     <el-input
-                    v-model="phone"
+                    v-model="email"
                     size="large"
-                    placeholder="邮箱"
+                    placeholder="网易邮箱"
                     :prefix-icon="Message" />
                 </div>
                 <div class="input-field">
                     <el-input
-                    v-model="password"
+                    v-model="emailPassword"
                     type="password"
                     size="large"
                     placeholder="密码"
@@ -72,10 +100,10 @@ const goLoginQrcode = () => {
                     <el-button type="primary" size="large">登录</el-button>
                 </div>
                 <section class="other-login">
-                    <el-button type="primary" text @click="goLoginQrcode">二维码登录</el-button>
+                    <el-button type="primary" text @click="useLoginQrcode">二维码登录</el-button>
                     |
                     <i> </i>
-                    <el-button type="primary" text @click="goLoginPhone">手机号登陆</el-button>
+                    <el-button type="primary" text @click="useLoginPhone">手机号登陆</el-button>
                 </section>
             </section>
             <section v-show="loginMethod === 'qrcode'">
@@ -83,10 +111,10 @@ const goLoginQrcode = () => {
                     <el-button type="primary" size="large">登录</el-button>
                 </div>
                 <section class="other-login">
-                    <el-button type="primary" text @click="goLoginPhone">手机号登录</el-button>
+                    <el-button type="primary" text @click="useLoginPhone">手机号登录</el-button>
                     |
                     <i> </i>
-                    <el-button type="primary" text @click="goLoginEmail">&nbsp; 邮箱登录 &nbsp;</el-button>
+                    <el-button type="primary" text @click="useLoginEmail">&nbsp; 邮箱登录 &nbsp;</el-button>
                 </section>
             </section>
         </div>
@@ -115,10 +143,14 @@ const goLoginQrcode = () => {
                 button.el-button {
                     width: 100%;
                 }
-            }
 
-            .use-code {
-
+                &.captcha {
+                    display: flex;
+                    button.el-button {
+                        width: auto;
+                        margin-left: 5px;
+                    }
+                }
             }
 
             .other-login {
