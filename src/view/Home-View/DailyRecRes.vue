@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, toRef } from 'vue'
 import { musicListHooks } from '@/api'
 import { State } from './typings'
-import { isLogined } from '@/utils'
+import { isLogined, isGuestLogined } from '@/utils'
 import { loginHooks } from '@/api'
 const loading = ref(true)
 const { dailyRec } = musicListHooks()
@@ -14,11 +14,16 @@ const dailyRecommendResource = toRef(state, 'dailyRecommendResource')
 onMounted(async () => {
   // 请求推荐歌单前验证是否登录
   const _isLogined = isLogined()
+  // 是否用户已经是游客登陆状态
+  const _isGuestLogined = isGuestLogined()
   // 未登录自动进行游客登录
   const { loginGuest } = loginHooks()
   if (!_isLogined) {
-    await loginGuest()
+    if(!isGuestLogined) {
+      await loginGuest()
+    }
   }
+
   dailyRec().then(res => {
     state.dailyRecommendResource = res.recommend
     loading.value = false
