@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { toRef } from 'vue'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
 import { computed } from 'vue';
 import { useRouter } from 'vue-router'
 const userStore = useUserStore()
-const isLogined = userStore.isLogined
-const nickname = userStore.nickname
+const isLogined = toRef(userStore, 'isLogined')
 
 const signature = computed(() => {
-  return isLogined ? 'signature' : '当前是游客登陆'
+  return isLogined ? userStore.signature : '当前是游客登陆'
 })
 
 const router = useRouter()
@@ -31,7 +31,7 @@ const goLogin = () => {
           <el-avatar class="avatar" size="large" :icon="UserFilled" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" />
         </div>
         <div class="profile-main">
-          <p class="name">{{ nickname }}</p>
+          <p class="name">{{ userStore.nickname }}</p>
           <p class="signature">{{ signature }}</p>
           <section v-if="isLogined" class="button-group-logined">
             <el-button type="primary">退出登录</el-button>

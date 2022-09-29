@@ -1,5 +1,5 @@
 export interface LoginPhoneDto {
-    phone: string
-    password?: string
-    captcha?: number
+  phone: string
+  password?: string
+  captcha?: string
 }

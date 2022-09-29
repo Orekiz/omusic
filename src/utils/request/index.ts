@@ -17,7 +17,7 @@ class Request {
 
   get ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      instance.get(url, { baseURL: this.baseUrl, params: { ...data, realIP: '139.196.215.163', timestamp: getTimestamp() } })
+      instance.get(url, { baseURL: this.baseUrl, params: { ...data, realIP: '139.196.215.164', timestamp: getTimestamp() } })
       .then(res => {
         // 200: 请求成功
         if (res.status === 200) {
@@ -39,9 +39,8 @@ class Request {
 
   post ({ url, data }: AxiosRequest): Promise<any> {
     return new Promise((resolve, reject) => {
-      instance.post(`${this.baseUrl}${url}`, { ...data, realIP: '139.196.215.163', timestamp: getTimestamp() })
+      instance.post(`${this.baseUrl}${url}?timestamp=${getTimestamp()}`, { ...data, realIP: '139.196.215.163'})
       .then(res => {
-        console.log(res)
         // 200: 请求成功
         if (res.status === 200) {
           if (res.data.code === 200) {
