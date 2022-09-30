@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { onMounted, toRef, watch } from 'vue'
+import { onMounted, toRef, watch, computed } from 'vue'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
-import { computed } from 'vue';
 import { useRouter } from 'vue-router'
 import { userHooks } from '@/api'
 const userStore = useUserStore()
@@ -12,14 +11,6 @@ const isLogined = toRef(userStore, 'isLogined')
 const { userAccount } = userHooks()
 
 onMounted(() => {
-  // if (isLogined.value) {
-  //   userAccount().then(res => {
-  //     const { userId, nickname, signature, avatarUrl } = res.profile
-  //     userStore.setUserProfile({ userId, nickname, signature, avatarUrl })
-  //   }).catch(err => {
-  //     console.log(err)
-  //   })
-  // }
   watch(
     () => userStore.isLogined,
     (isLogined, preIsLogined) => {
@@ -78,7 +69,7 @@ const goLogin = () => {
 <style lang="scss" scoped>
 .avatar {
   // border: 1px solid rgba(0, 0, 0, .1);
-  box-shadow: 1px 2px 5px rgba(0, 0, 0, .2);
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
 }
 .profile-show {
   .profile-main {

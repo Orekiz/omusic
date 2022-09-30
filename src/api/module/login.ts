@@ -12,8 +12,13 @@ export default function loginHooks () {
     return request.post({ url: LoginDic.phone, data })
   }
 
+  function sentCaptcha (phone: string) {
+    return request.get({ url: LoginDic.sendCaptcha, data: { phone } })
+  }
+
   return {
     loginGuest,
-    loginPhone
+    loginPhone,
+    sentCaptcha
   }
 }

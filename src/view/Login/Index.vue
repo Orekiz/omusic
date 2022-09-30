@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { loginHooks } from '@/api'
@@ -14,7 +14,7 @@ const phone = ref('')
 const phonePassword = ref('')
 const isCaptcha = ref(false)
 const phoneCaptcha = ref('')
-const phoneLoginBtnLoading = ref(false)
+const loginPhoneBtnLoading = ref(false)
 
 const email = ref('')
 const emailPassword = ref('')
@@ -31,7 +31,7 @@ const useLoginQrcode = () => {
   loginMethod.value = 'qrcode'
 }
 // login
-const { loginPhone } = loginHooks()
+const { loginPhone, sentCaptcha } = loginHooks()
 const loginPhoneHandler = () => {
   let data = { phone: phone.value.trim(), password: phonePassword.value.trim(), captcha: phoneCaptcha.value.trim() }
   // validate
@@ -43,8 +43,12 @@ const loginPhoneHandler = () => {
     ElMessage.error('请输入正确的手机号')
     return false
   }
+  if (isNaN(Number(data.captcha))) {
+    ElMessage.error('验证码格式不正确')
+    return false
+  }
   // debounce
-  phoneLoginBtnLoading.value = true
+  loginPhoneBtnLoading.value = true
   // login fetch
   loginPhone(data).then(res => {
     clearMusicA()
@@ -58,7 +62,40 @@ const loginPhoneHandler = () => {
     }, 1500)
   }).catch(err => {
     ElMessage.error(err.msg ?? err.message ?? '登录失败请重试')
-    phoneLoginBtnLoading.value = false
+    loginPhoneBtnLoading.value = false
+  })
+}
+
+// login captcha
+const captchaBtnLoading = ref(false)
+const captchaBtnDisabled = ref(false)
+const _captchaBtnTimer = ref(30)
+const captchaBtnTimer = computed(() => {
+  return captchaBtnDisabled.value ? _captchaBtnTimer.value + ' ' : ''
+})
+const sentCaptchaHandler = () => {
+  if (!phone.value || phone.value.length !== 11) {
+    ElMessage.error('请输入正确的手机号')
+    return false
+  }
+  captchaBtnLoading.value = true
+  captchaBtnDisabled.value = true
+  // debounce
+  let timer = setInterval(() => {
+    _captchaBtnTimer.value--
+    if (_captchaBtnTimer.value === 0) {
+      captchaBtnDisabled.value = false
+      _captchaBtnTimer.value = 30
+      clearInterval(timer)
+    }
+  }, 1000)
+  // api fetch
+  sentCaptcha(phone.value).then(res => {
+    ElMessage.success('验证码发送成功！')
+    captchaBtnLoading.value = false
+  }).catch(err => {
+    ElMessage(err.msg ?? err.message ?? '发送验证码失败请稍后重试')
+    captchaBtnLoading.value = false
   })
 }
 </script>
@@ -78,7 +115,13 @@ const loginPhoneHandler = () => {
         </div>
         <div v-else class="input-field captcha">
           <el-input v-model="phoneCaptcha" type="password" size="large" placeholder="验证码" :prefix-icon="Lock" />
-          <el-button size="large">发送验证码</el-button>
+          <el-button
+            size="large"
+            @click="sentCaptchaHandler"
+            :disabled="captchaBtnDisabled"
+            :loading="captchaBtnLoading">
+              {{ captchaBtnTimer }}发送验证码
+          </el-button>
         </div>
         <section class="input-field">
           <el-button v-if="!isCaptcha" @click="toggleIsCaptcha">
@@ -89,7 +132,7 @@ const loginPhoneHandler = () => {
           </el-button>
         </section>
         <div class="input-field">
-          <el-button type="primary" size="large" @click="loginPhoneHandler" :loading="phoneLoginBtnLoading">登录
+          <el-button type="primary" size="large" @click="loginPhoneHandler" :loading="loginPhoneBtnLoading">登录
           </el-button>
         </div>
         <section class="other-login">
