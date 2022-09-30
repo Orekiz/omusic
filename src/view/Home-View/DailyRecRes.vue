@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, toRef, watch } from 'vue'
 import { loginHooks, musicListHooks } from '@/api'
 import { State } from './typings'
-import { isLogined, isGuestLogined } from '@/utils'
+import { isGuestLogined } from '@/utils'
 import { ElNotification } from 'element-plus'
 import { useUserStore } from '@/store'
 const userStore = useUserStore()
@@ -26,7 +26,7 @@ const getDailyRecommendResource = () => {
 // #TODO: 验证是否登录可以写在父组件HomeView里，通过props传进来，写在这里有些繁琐
 onMounted(async () => {
   // 请求推荐歌单前验证是否登录
-  const _isLogined = isLogined()
+  const _isLogined = userStore.isLogined
   // 是否用户已经是游客登陆状态
   const _isGuestLogined = isGuestLogined()
   // 未登录自动进行游客登录
