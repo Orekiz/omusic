@@ -20,6 +20,8 @@ const email = ref('')
 const emailPassword = ref('')
 const toggleIsCaptcha = () => {
   isCaptcha.value = !isCaptcha.value
+  phonePassword.value = ''
+  phoneCaptcha.value = ''
 }
 const useLoginEmail = () => {
   loginMethod.value = 'email'
@@ -114,7 +116,7 @@ const sentCaptchaHandler = () => {
           <el-input v-model="phonePassword" type="password" size="large" placeholder="密码" :prefix-icon="Lock" />
         </div>
         <div v-else class="input-field captcha">
-          <el-input v-model="phoneCaptcha" type="password" size="large" placeholder="验证码" :prefix-icon="Lock" />
+          <el-input v-model="phoneCaptcha" type="text" size="large" placeholder="验证码" :prefix-icon="Lock" />
           <el-button
             size="large"
             @click="sentCaptchaHandler"

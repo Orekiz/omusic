@@ -5,7 +5,8 @@
 export enum LoginDic {
   phone = '/login/cellphone',
   guest = '/register/anonimous',
-  sendCaptcha = '/captcha/sent'
+  sendCaptcha = '/captcha/sent',
+  logout = '/logout'
 }
 
 export enum UserDic {

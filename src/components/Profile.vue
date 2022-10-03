@@ -3,11 +3,13 @@ import { onMounted, toRef, watch, computed } from 'vue'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
 import { useRouter } from 'vue-router'
-import { userHooks } from '@/api'
+import { loginHooks, userHooks } from '@/api'
+import { ElMessage } from 'element-plus'
 const userStore = useUserStore()
 const router = useRouter()
 
 const isLogined = toRef(userStore, 'isLogined')
+const { logout } = loginHooks()
 const { userAccount } = userHooks()
 
 onMounted(() => {
@@ -35,6 +37,15 @@ const avatar = computed(() => {
 const goLogin = () => {
   router.push('/login')
 }
+const logoutHandler = () => {
+  logout().then(res => {
+    ElMessage.success('成功，跳转至登录页面')
+    userStore.isLogined = false
+    router.push('/login')
+  }).catch(err => {
+    ElMessage.error('失败')
+  })
+}
 </script>
 
 <template>
@@ -54,7 +65,7 @@ const goLogin = () => {
           <p class="name">{{ userStore.nickname }}</p>
           <p class="signature">{{ signature }}</p>
           <section v-if="isLogined" class="button-group-logined">
-            <el-button type="primary">退出登录</el-button>
+            <el-button type="primary" @click="logoutHandler">退出登录</el-button>
           </section>
           <section v-else class="button-group-unlogin">
             <el-button type="primary" @click="goLogin">登录</el-button>

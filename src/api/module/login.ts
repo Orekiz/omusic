@@ -15,10 +15,15 @@ export default function loginHooks () {
   function sentCaptcha (phone: string) {
     return request.get({ url: LoginDic.sendCaptcha, data: { phone } })
   }
+  
+  function logout () {
+    return request.post({ url: LoginDic.logout })
+  }
 
   return {
     loginGuest,
     loginPhone,
-    sentCaptcha
+    sentCaptcha,
+    logout
   }
 }
