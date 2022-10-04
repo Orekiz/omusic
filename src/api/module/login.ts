@@ -15,15 +15,30 @@ export default function loginHooks () {
   function sentCaptcha (phone: string) {
     return request.get({ url: LoginDic.sendCaptcha, data: { phone } })
   }
-  
+
   function logout () {
     return request.post({ url: LoginDic.logout })
+  }
+
+  function qrKey () {
+    return request.get({ url: LoginDic.qrKey })
+  }
+
+  function qrCreate (key: string) {
+    return request.get({ url: LoginDic.qrCreate, data: { key, qrimg: true } })
+  }
+
+  function qrCheck (key: string) {
+    return request.get({ url: LoginDic.qrCheck, data: { key } })
   }
 
   return {
     loginGuest,
     loginPhone,
     sentCaptcha,
-    logout
+    logout,
+    qrKey,
+    qrCreate,
+    qrCheck
   }
 }

@@ -23,7 +23,6 @@ const getDailyRecommendResource = () => {
   })
 }
 
-// #TODO: 验证是否登录可以写在父组件HomeView里，通过props传进来，写在这里有些繁琐
 onMounted(async () => {
   // 请求推荐歌单前验证是否登录
   const _isLogined = userStore.isLogined
@@ -36,18 +35,19 @@ onMounted(async () => {
       title: '提示',
       message: '当前为游客登录，有需要请进行登录'
     })
-    // 监听store的登录状态，如果登录了就再次请求推荐歌单
-    watch(
-      () => userStore.isLogined,
-      () => {
-        getDailyRecommendResource()
-      }
-    )
     if(!_isGuestLogined) {
       await loginGuest()
     }
   }
   getDailyRecommendResource()
+  // 监听store的登录状态，如果登录了就再次请求推荐歌单
+  watch(
+    () => userStore.isLogined,
+    () => {
+      loading.value = true
+      getDailyRecommendResource();
+    }
+  )
 })
 </script>
 

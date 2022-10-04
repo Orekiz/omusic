@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { loginHooks } from '@/api'
-import { clearMusicA } from '@/utils'
+import { clearMusicA, setQrLogined } from '@/utils'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
 const router = useRouter()
@@ -18,11 +18,14 @@ const loginPhoneBtnLoading = ref(false)
 
 const email = ref('')
 const emailPassword = ref('')
+const qrImg = ref('')
+
 const toggleIsCaptcha = () => {
   isCaptcha.value = !isCaptcha.value
   phonePassword.value = ''
   phoneCaptcha.value = ''
 }
+const { loginPhone, sentCaptcha, qrKey, qrCreate, qrCheck } = loginHooks()
 const useLoginEmail = () => {
   loginMethod.value = 'email'
 }
@@ -31,9 +34,52 @@ const useLoginPhone = () => {
 }
 const useLoginQrcode = () => {
   loginMethod.value = 'qrcode'
+  loginQr()
+}
+
+const loginSuccess = () => {
+  clearMusicA()
+  userStore.setLogined()
+  ElMessage.success('登陆成功，即将跳转至首页')
+  const goIndexTimer = setTimeout(() => {
+    router.push('/')
+    clearTimeout(goIndexTimer)
+  }, 1500)
+}
+
+const loginQrFlag = ref(false)
+const loginQr = async () => {
+  if (!loginQrFlag.value) {
+    loginQrFlag.value = true
+    qrImg.value = 'https://cdn.dribbble.com/users/924068/screenshots/3757746/media/efe4827f5165339fbbfdcdc7f9918314.gif'
+    const { data: { unikey: key } } = await qrKey()
+    const { data: { qrimg } } = await qrCreate(key)
+    qrImg.value = qrimg
+    let timer = setInterval(() => {
+      qrCheck(key).catch(res => {
+        // code800 二维码过期
+        // code801 等待扫码
+        // code802 授权中……
+        // code803 登陆成功
+        switch (res.code) {
+          case 800:
+            clearInterval(timer)
+            loginQrFlag.value = false
+            useLoginQrcode()
+            ElMessage.warning('二维码已过期 正在刷新二维码……')
+            break
+          case 803:
+            clearInterval(timer)
+            loginSuccess()
+            // 由于扫码登录后传给前台的cookie 'MUSIC_U' 带有属性httponly 无法被js查询到，所以需要额外添加一个cookie
+            setQrLogined()
+            break
+        }
+      })
+    }, 1500)
+  }
 }
 // login
-const { loginPhone, sentCaptcha } = loginHooks()
 const loginPhoneHandler = () => {
   let data = { phone: phone.value.trim(), password: phonePassword.value.trim(), captcha: phoneCaptcha.value.trim() }
   // validate
@@ -53,15 +99,7 @@ const loginPhoneHandler = () => {
   loginPhoneBtnLoading.value = true
   // login fetch
   loginPhone(data).then(res => {
-    clearMusicA()
-    userStore.setLogined()
-    let { userId, nickname, signature, avatarUrl } = res.profile
-    userStore.setUserProfile({ userId, nickname, signature, avatarUrl })
-    ElMessage.success('登陆成功，即将跳转至首页')
-    const goIndexTimer = setTimeout(() => {
-      router.push('/')
-      clearTimeout(goIndexTimer)
-    }, 1500)
+    loginSuccess()
   }).catch(err => {
     ElMessage.error(err.msg ?? err.message ?? '登录失败请重试')
     loginPhoneBtnLoading.value = false
@@ -162,8 +200,11 @@ const sentCaptchaHandler = () => {
         </section>
       </section>
       <section v-show="loginMethod === 'qrcode'">
-        <div class="input-field">
-          <el-button type="primary" size="large">登录</el-button>
+        <div class="qr-field">
+          <img style="width:180px;height:180px" :src="qrImg" alt="">
+        </div>
+        <div class="tip-field">
+          <span>TIP: 请使用手机版网易云音乐APP扫码登录</span>
         </div>
         <section class="other-login">
           <el-button type="primary" text @click="useLoginPhone">手机号登录</el-button>
@@ -209,8 +250,23 @@ const sentCaptchaHandler = () => {
         }
       }
 
+      .qr-field {
+        width: 180px;
+        height: 180px;
+        margin: 0 auto;
+        background-color: #fff;
+        border-radius: var(--el-border-radius-base);
+        overflow: hidden;
+      }
+
       .other-login {
         margin-top: 20px;
+      }
+
+      .tip-field {
+        margin-top: 20px;
+        font-size: 12px;
+        color: var(--el-color-info);
       }
     }
   }

@@ -1,15 +1,16 @@
 <script setup lang="ts">
-import { onMounted, toRef, watch, computed } from 'vue'
+import { onMounted, ref, toRef, watch, computed } from 'vue'
 import { UserFilled } from '@element-plus/icons-vue'
 import { useUserStore } from '@/store'
 import { useRouter } from 'vue-router'
 import { loginHooks, userHooks } from '@/api'
 import { ElMessage } from 'element-plus'
+import { removeQrLogined } from '@/utils'
 const userStore = useUserStore()
 const router = useRouter()
 
 const isLogined = toRef(userStore, 'isLogined')
-const { logout } = loginHooks()
+const { logout, loginGuest } = loginHooks()
 const { userAccount } = userHooks()
 
 onMounted(() => {
@@ -32,19 +33,25 @@ const signature = computed(() => {
   return isLogined.value ? userStore.signature : '当前是游客登录'
 })
 const avatar = computed(() => {
-  return isLogined.value ? `${userStore.avatarUrl}?param=38y38` : 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
+  return isLogined.value ? `${userStore.avatarUrl}` : 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
 })
 const goLogin = () => {
   router.push('/login')
 }
-const logoutHandler = () => {
-  logout().then(res => {
-    ElMessage.success('成功，跳转至登录页面')
+const logoutBtnLoading = ref(false)
+const logoutHandler = async () => {
+  logoutBtnLoading.value = true
+  await logout()
+  // 删除二维码登录的cookie
+  removeQrLogined()
+  ElMessage.success('登出成功，跳转至登录页面')
+  // 游客登录，以防首页推荐出现问题
+  loginGuest().then(() => {
     userStore.isLogined = false
-    router.push('/login')
-  }).catch(err => {
-    ElMessage.error('失败')
+    userStore.setUserProfile({})
   })
+  router.push('/login')
+  logoutBtnLoading.value = false
 }
 </script>
 
@@ -65,7 +72,7 @@ const logoutHandler = () => {
           <p class="name">{{ userStore.nickname }}</p>
           <p class="signature">{{ signature }}</p>
           <section v-if="isLogined" class="button-group-logined">
-            <el-button type="primary" @click="logoutHandler">退出登录</el-button>
+            <el-button type="primary" @click="logoutHandler" :loading="logoutBtnLoading">退出登录</el-button>
           </section>
           <section v-else class="button-group-unlogin">
             <el-button type="primary" @click="goLogin">登录</el-button>
