@@ -381,3 +381,16 @@ template {
 [hidden] {
   display: none;
 }
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track-piece {
+  background-color: var(--el-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--el-text-color-primary);
+  border-radius: 999px;
+}

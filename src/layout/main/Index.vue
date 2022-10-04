@@ -15,6 +15,6 @@
 <style lang="scss" scoped>
 main {
   margin-top: calc(64px + 20px);
-  padding: 0 10vw;
+  padding: 0 10% 200px;
 }
 </style>

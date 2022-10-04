@@ -16,7 +16,11 @@ const dailyRecommendResource = toRef(state, 'dailyRecommendResource')
 
 const getDailyRecommendResource = () => {
   dailyRec().then(res => {
-    dailyRecommendResource.value = res.recommend
+    if (res.recommend.length > 5) {
+      dailyRecommendResource.value = res.recommend.slice(0, 5)
+    } else {
+      dailyRecommendResource.value = res.recommend.slice(0, 10)
+    }
     loading.value = false
   }).catch(err => {
     console.log(err)
@@ -35,7 +39,7 @@ onMounted(async () => {
       title: '提示',
       message: '当前为游客登录，有需要请进行登录'
     })
-    if(!_isGuestLogined) {
+    if (!_isGuestLogined) {
       await loginGuest()
     }
   }
@@ -60,9 +64,15 @@ onMounted(async () => {
     <el-skeleton :loading="loading" animated>
       <template #default>
         <section class="content">
-          <p v-for="(item, index) of dailyRecommendResource" :key="index">
-            {{ item.name }}
-          </p>
+          <div class="item" v-for="item of dailyRecommendResource" :key="item.id">
+            <div class="pic">
+              <img loading="lazy" :src="item.picUrl" :alt="item.name">
+            </div>
+            <div class="shadow">
+              <img :src="item.picUrl + '?imageView&blur=50x50'" alt="">
+            </div>
+            <p>{{ item.name }}</p>
+          </div>
         </section>
       </template>
     </el-skeleton>
@@ -70,12 +80,13 @@ onMounted(async () => {
 </template>
 
 <style lang="scss" scoped>
+@media screen {
   .daily-rec {
     .title {
-      margin-bottom: 20px;
       h2 {
         font-size: 26px;
       }
+
       span {
         font-size: 12px;
       }
@@ -83,6 +94,89 @@ onMounted(async () => {
 
     .content {
       width: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .item {
+        position: relative;
+        width: calc(((100vw - 20vw) / 5) - 30px);
+        margin-top: 20px;
+        // background-color: var(--el-mask-color);
+        cursor: pointer;
+        border-radius: 10px;
+
+        &:hover {
+          .pic {
+            img {
+              transform: scale(1.01);
+            }
+          }
+
+          .shadow {
+            opacity: .5;
+          }
+        }
+
+        .pic {
+          width: 100%;
+          border-radius: 10px;
+          overflow: hidden;
+
+          img {
+            display: block;
+            width: 100%;
+            transition: var(--el-transition-all);
+          }
+        }
+
+        .shadow {
+          position: absolute;
+          top: 5%;
+          left: 0;
+          // backdrop-filter: blur(20px);
+          z-index: -1;
+          opacity: 0;
+          transition: var(--el-transition-all);
+
+          img {
+            display: block;
+            width: 100%;
+            filter: blur(20px);
+          }
+        }
+
+        p {
+          margin-top: 10px;
+          font-weight: bold;
+          padding: 0 5%;
+        }
+      }
     }
   }
+
+  html.dark {
+    .daily-rec {
+      .content {
+        .item {
+          &:hover {
+            .shadow {
+              opacity: .7;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .daily-rec {
+      .content {
+        .item {
+          width: calc(50% - 10px);
+        }
+      }
+    }
+  }
+}
 </style>

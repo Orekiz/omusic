@@ -10,4 +10,5 @@ import Footer from './footer/Index.vue';
 <Footer />
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

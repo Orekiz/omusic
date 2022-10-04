@@ -11,9 +11,22 @@ const routerForward = () => {
 </script>
 
 <template>
-  <el-button text :icon="ArrowLeftBold" @click="routerBack" />
-  <el-button style="margin-left: 0px;" text :icon="ArrowRightBold" @click="routerForward" />
+  <section class="router">
+    <el-button text :icon="ArrowLeftBold" @click="routerBack" />
+    <el-button style="margin-left: 0px;" text :icon="ArrowRightBold" @click="routerForward" />
+  </section>
 </template>
 
 <style lang="scss" scoped>
+  @media screen {
+    .router {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .router {
+        display: none;
+      }
+    }
+  }
 </style>

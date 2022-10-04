@@ -48,6 +48,7 @@ header {
   // background-size: 4px 4px;
   // backdrop-filter: saturate(50%) blur(4px);
   transition: background-color var(--el-transition-duration-fast);
+  z-index: 999;
 
   .flexitem {
     flex: 1;

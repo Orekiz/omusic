@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     HeaderRouter: typeof import('./src/components/HeaderRouter.vue')['default']
+    MobileAudioControl: typeof import('./src/components/MobileAudioControl.vue')['default']
     MobileNav: typeof import('./src/components/MobileNav.vue')['default']
     Profile: typeof import('./src/components/Profile.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
