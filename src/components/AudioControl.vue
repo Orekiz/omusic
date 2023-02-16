@@ -109,7 +109,6 @@
         display: flex;
       }
     }
-
   }
 
   @media (max-width: 768px) {
