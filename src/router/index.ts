@@ -14,6 +14,11 @@ const routes: RouteRecordRaw[] = [
     path: '/login',
     component: () => import('@/view/Login/Index.vue')
   },
+  {
+    name: 'musiclist',
+    path: '/musiclist/:id',
+    component: () => import('@/view/Music-List/Index.vue')
+  },
   // 没有匹配上的路由一律重定向到404路径
   {
     path: '/:pathMatch(.*)*',

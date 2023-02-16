@@ -5,7 +5,9 @@ import { State } from './typings'
 import { isGuestLogined } from '@/utils'
 import { ElNotification } from 'element-plus'
 import { useUserStore } from '@/store'
+import { useRouter } from 'vue-router'
 const userStore = useUserStore()
+const router = useRouter()
 
 const loading = ref(true)
 const { dailyRec } = musicListHooks()
@@ -53,6 +55,10 @@ onMounted(async () => {
     }
   )
 })
+
+const goMusiclist = (id: number) => {
+  router.push({ name: 'musiclist', params: { id } })
+}
 </script>
 
 <template>
@@ -64,7 +70,7 @@ onMounted(async () => {
     <el-skeleton :loading="loading" animated>
       <template #default>
         <section class="content">
-          <div class="item" v-for="item of dailyRecommendResource" :key="item.id">
+          <div class="item" v-for="item of dailyRecommendResource" :key="item.id" @click="goMusiclist(item.id)">
             <div class="pic">
               <img loading="lazy" :src="item.picUrl" :alt="item.name">
             </div>
@@ -134,10 +140,9 @@ onMounted(async () => {
           position: absolute;
           top: 5%;
           left: 0;
-          // backdrop-filter: blur(20px);
           z-index: -1;
           opacity: 0;
-          transition: var(--el-transition-all);
+          transition: var(--el-transition-fade);
 
           img {
             display: block;
