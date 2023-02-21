@@ -72,10 +72,11 @@ const goMusiclist = (id: number) => {
         <section class="content">
           <div class="item" v-for="item of dailyRecommendResource" :key="item.id" @click="goMusiclist(item.id)">
             <div class="pic">
-              <img loading="lazy" :src="item.picUrl" :alt="item.name">
+              <img loading="lazy" :src="item.picUrl + '?param=300y300'" :alt="item.name">
             </div>
             <div class="shadow">
-              <img :src="item.picUrl + '?imageView&blur=50x50'" alt="">
+              <!-- <img :src="item.picUrl + '?imageView&blur=50x50'" alt=""> -->
+              <img loading="lazy" :src="item.picUrl + '?param=300y300'" alt="">
             </div>
             <p>{{ item.name }}</p>
           </div>
@@ -138,7 +139,7 @@ const goMusiclist = (id: number) => {
 
         .shadow {
           position: absolute;
-          top: 5%;
+          top: 6%;
           left: 0;
           z-index: -1;
           opacity: 0;
@@ -147,7 +148,7 @@ const goMusiclist = (id: number) => {
           img {
             display: block;
             width: 100%;
-            filter: blur(20px);
+            filter: blur(20px) contrast(110%);
           }
         }
 
