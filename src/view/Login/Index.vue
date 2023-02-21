@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { ElMessage, ElNotification } from 'element-plus'
 import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { loginHooks } from '@/api'
@@ -57,6 +57,10 @@ onMounted(() => {
     title: '提示',
     message: '由于网易的原因：手机号和邮箱登录暂时大概率无法使用，建议使用扫描二维码登录'
   })
+})
+
+onBeforeUnmount(() => {
+  clearInterval(checkLoginQrTimer)
 })
 
 let checkLoginQrTimer: any
