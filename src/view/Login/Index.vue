@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage, ElNotification } from 'element-plus'
 import { Lock, Phone, Message } from '@element-plus/icons-vue'
 import { loginHooks } from '@/api'
 import { clearMusicA, setQrLogined } from '@/utils'
@@ -9,7 +9,7 @@ import { useUserStore } from '@/store'
 const router = useRouter()
 const userStore = useUserStore()
 
-const loginMethod = ref('phone')
+const loginMethod = ref('qrcode')
 const phone = ref('')
 const phonePassword = ref('')
 const isCaptcha = ref(false)
@@ -28,9 +28,13 @@ const toggleIsCaptcha = () => {
 const { loginPhone, sentCaptcha, qrKey, qrCreate, qrCheck } = loginHooks()
 const useLoginEmail = () => {
   loginMethod.value = 'email'
+  clearInterval(checkLoginQrTimer)
+  loginQrFlag.value = false
 }
 const useLoginPhone = () => {
   loginMethod.value = 'phone'
+  clearInterval(checkLoginQrTimer)
+  loginQrFlag.value = false
 }
 const useLoginQrcode = () => {
   loginMethod.value = 'qrcode'
@@ -47,6 +51,16 @@ const loginSuccess = () => {
   }, 1500)
 }
 
+onMounted(() => {
+  loginQr()
+  ElNotification({
+    title: '提示',
+    message: '由于网易的原因：手机号和邮箱登录暂时大概率无法使用，建议使用扫描二维码登录'
+  })
+})
+
+let checkLoginQrTimer: any
+
 const loginQrFlag = ref(false)
 const loginQr = async () => {
   if (!loginQrFlag.value) {
@@ -55,7 +69,7 @@ const loginQr = async () => {
     const { data: { unikey: key } } = await qrKey()
     const { data: { qrimg } } = await qrCreate(key)
     qrImg.value = qrimg
-    let timer = setInterval(() => {
+    checkLoginQrTimer = setInterval(() => {
       qrCheck(key).catch(res => {
         // code800 二维码过期
         // code801 等待扫码
@@ -63,13 +77,13 @@ const loginQr = async () => {
         // code803 登陆成功
         switch (res.code) {
           case 800:
-            clearInterval(timer)
+            clearInterval(checkLoginQrTimer)
             loginQrFlag.value = false
             useLoginQrcode()
             ElMessage.warning('二维码已过期 正在刷新二维码……')
             break
           case 803:
-            clearInterval(timer)
+            clearInterval(checkLoginQrTimer)
             loginSuccess()
             // 由于扫码登录后传给前台的cookie 'MUSIC_U' 带有属性httponly 无法被js查询到，所以需要额外添加一个cookie
             setQrLogined()
